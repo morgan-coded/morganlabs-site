@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morgan Labs — Building tools that actually get used</title>
+  <meta name="description" content="Morgan Labs is an indie software studio. We build focused tools for real problems — no bloat, no VC, no roadmap theater.">
+  <meta property="og:title" content="Morgan Labs">
+  <meta property="og:description" content="An indie studio building focused tools for real problems.">
+  <meta property="og:url" content="https://morganlabs.org">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+  <style>
+    /* ── Reset ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Tokens ─────────────────────────────────────── */
+    :root {
+      --bg:        #09090b;
+      --surface:   #111113;
+      --surface2:  #18181b;
+      --border:    #27272a;
+      --border2:   #3f3f46;
+      --text:      #fafafa;
+      --muted:     #71717a;
+      --muted2:    #52525b;
+      --accent:    #6366f1;
+      --accent-dim:#312e81;
+      --green:     #22c55e;
+      --green-dim: #14532d;
+      --amber:     #f59e0b;
+      --amber-dim: #451a03;
+      --radius:    12px;
+      --radius-sm: 7px;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --mono: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Layout ─────────────────────────────────────── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ─────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      border-bottom: 1px solid var(--border);
+      background: rgba(9,9,11,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-inner {
+      display: flex; align-items: center; gap: 24px;
+      height: 56px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-weight: 700; font-size: 15px; color: var(--text);
+      text-decoration: none; letter-spacing: -0.3px;
+    }
+    .nav-logo .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      flex-shrink: 0;
+    }
+    .nav-links { display: flex; gap: 20px; margin-left: auto; }
+    .nav-links a {
+      color: var(--muted); font-size: 14px; text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── Hero ─────────────────────────────────────── */
+    .hero {
+      padding: 96px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--accent);
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.25);
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow::before { content: '🧪'; font-size: 11px; }
+    .hero h1 {
+      font-size: clamp(36px, 5vw, 58px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.08;
+      max-width: 800px;
+      margin-bottom: 24px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--muted);
+      max-width: 540px;
+      line-height: 1.65;
+      margin-bottom: 36px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 10px 20px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600; text-decoration: none;
+      transition: all 0.15s; cursor: pointer; border: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
+
+    /* ── Stats bar ─────────────────────────────────────── */
+    .stats-bar {
+      display: flex; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin: 64px 0 80px;
+    }
+    .stat {
+      flex: 1; padding: 20px 24px;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-value {
+      font-size: 26px; font-weight: 800;
+      letter-spacing: -0.5px; color: var(--text);
+    }
+    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── Section headings ─────────────────────────────────────── */
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted2);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 700; letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .section-sub { color: var(--muted); max-width: 480px; line-height: 1.6; margin-bottom: 48px; }
+
+    /* ── Project cards ─────────────────────────────────────── */
+    #projects { padding: 0 0 96px; }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover {
+      border-color: var(--border2);
+      transform: translateY(-2px);
+    }
+    .project-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+    }
+    .card-leadclaw::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+    .card-vbt::before     { background: linear-gradient(90deg, transparent, var(--green), transparent); }
+    .card-lab::before     { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
+
+    .card-header {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .icon-leadclaw { background: rgba(99,102,241,0.12); }
+    .icon-vbt      { background: rgba(34,197,94,0.12); }
+    .icon-lab      { background: rgba(245,158,11,0.12); }
+
+    .card-badge {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 9px;
+      border-radius: 100px; white-space: nowrap;
+    }
+    .badge-live    { background: rgba(34,197,94,0.12);  color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+    .badge-beta    { background: rgba(99,102,241,0.12); color: #818cf8;      border: 1px solid rgba(99,102,241,0.2); }
+    .badge-wip     { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
+
+    .card-title {
+      font-size: 20px; font-weight: 700; letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+    .card-desc { color: var(--muted); font-size: 14px; line-height: 1.65; flex: 1; }
+    .card-tags {
+      display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0 24px;
+    }
+    .tag {
+      font-size: 11px; padding: 3px 9px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 100px; color: var(--muted); font-family: var(--mono);
+    }
+    .card-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; font-weight: 600; text-decoration: none;
+      transition: gap 0.15s;
+    }
+    .link-leadclaw { color: #818cf8; }
+    .link-vbt      { color: var(--green); }
+    .link-lab      { color: var(--amber); }
+    .card-link:hover { gap: 10px; }
+    .card-link .arrow { font-size: 16px; }
+
+    /* Coming Soon card */
+    .card-lab {
+      background: repeating-linear-gradient(
+        -45deg,
+        var(--surface),
+        var(--surface) 8px,
+        rgba(245,158,11,0.025) 8px,
+        rgba(245,158,11,0.025) 16px
+      );
+    }
+
+    /* ── About ─────────────────────────────────────── */
+    #about {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+    .about-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+      align-items: start;
+    }
+    .about-text p {
+      color: var(--muted); line-height: 1.75; margin-bottom: 16px;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-text strong { color: var(--text); font-weight: 600; }
+    .about-links { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+    .about-link {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--muted); font-size: 14px; text-decoration: none;
+      padding: 10px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-sm); transition: all 0.15s;
+    }
+    .about-link:hover { border-color: var(--border2); color: var(--text); }
+    .about-link .icon { font-size: 16px; }
+
+    .principles { display: flex; flex-direction: column; gap: 0; }
+    .principle {
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .principle:first-child { padding-top: 0; }
+    .principle:last-child { border-bottom: none; }
+    .principle-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .principle-title {
+      font-size: 15px; font-weight: 600; margin-bottom: 4px;
+    }
+    .principle-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── Footer ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .footer-left { font-size: 13px; color: var(--muted2); }
+    .footer-left a { color: var(--muted); text-decoration: none; }
+    .footer-left a:hover { color: var(--text); }
+    .footer-right { display: flex; gap: 20px; }
+    .footer-right a { font-size: 13px; color: var(--muted2); text-decoration: none; }
+    .footer-right a:hover { color: var(--muted); }
+
+    /* ── Responsive ─────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .hero { padding: 64px 0 56px; }
+      .stats-bar { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      .stat:last-child { border-bottom: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ─────────────────────────────────────── -->
+<nav>
+  <div class="container">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo">
+        <div class="dot"></div>
+        Morgan Labs
+      </a>
+      <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="mailto:morgan@morganlabs.org">Contact</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ── Hero ─────────────────────────────────────── -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-eyebrow">Indie Software Studio</div>
+    <h1>Building tools that<br><em>actually get used</em></h1>
+    <p class="hero-sub">
+      Morgan Labs is a one-person shop. I pick real problems, build focused software to solve them, and ship fast. No bloat, no committee, no roadmap theater.
+    </p>
+    <div class="hero-actions">
+      <a href="#projects" class="btn btn-primary">See the projects →</a>
+      <a href="mailto:morgan@morganlabs.org" class="btn btn-ghost">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── Stats ─────────────────────────────────────── -->
+<div class="container">
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-value">2</div>
+      <div class="stat-label">Active projects</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">Austin, TX</div>
+      <div class="stat-label">Home base</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">0</div>
+      <div class="stat-label">VC dollars raised</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">100%</div>
+      <div class="stat-label">Shipped by one person</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Projects ─────────────────────────────────────── -->
+<section id="projects">
+  <div class="container">
+    <div class="section-label">Featured experiments</div>
+    <h2 class="section-title">What's in the lab</h2>
+    <p class="section-sub">Two focused tools, two completely different problems. That's the point.</p>
+
+    <div class="projects-grid">
+
+      <!-- LeadClaw -->
+      <div class="project-card card-leadclaw">
+        <div class="card-header">
+          <div class="card-icon icon-leadclaw">🦞</div>
+          <span class="card-badge badge-beta">Beta</span>
+        </div>
+        <div class="card-title">LeadClaw</div>
+        <p class="card-desc">
+          Local service businesses lose jobs to missed follow-ups — not because they don't care, but because they're busy doing the actual work. LeadClaw is a lightweight CLI that shows you who to call today, drafts the follow-up text, and keeps your pipeline visible. No CRM subscription. No sales team required.
+        </p>
+        <div class="card-tags">
+          <span class="tag">Python</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">Claude AI</span>
+          <span class="tag">CLI</span>
+          <span class="tag">Web dashboard</span>
+        </div>
+        <a href="https://github.com/morgan-coded/leadclaw" target="_blank" rel="noopener" class="card-link link-leadclaw">
+          View on GitHub <span class="arrow">→</span>
+        </a>
+      </div>
+
+      <!-- VBT App -->
+      <div class="project-card card-vbt">
+        <div class="card-header">
+          <div class="card-icon icon-vbt">🏋️</div>
+          <span class="card-badge badge-wip">In development</span>
+        </div>
+        <div class="card-title">VBT App</div>
+        <p class="card-desc">
+          Velocity-Based Training is how elite strength coaches measure effort — not by reps or weight, but by how fast the bar moves. This app brings that precision to athletes and coaches who don't have $2,000 hardware. Computer vision, real-time feedback, training intelligence built for people who take performance seriously.
+        </p>
+        <div class="card-tags">
+          <span class="tag">Computer vision</span>
+          <span class="tag">Real-time tracking</span>
+          <span class="tag">Strength training</span>
+          <span class="tag">iOS</span>
+        </div>
+        <a href="https://github.com/morgan-coded" target="_blank" rel="noopener" class="card-link link-vbt">
+          Follow the build <span class="arrow">→</span>
+        </a>
+      </div>
+
+      <!-- Lab Notes / Coming Soon -->
+      <div class="project-card card-lab">
+        <div class="card-header">
+          <div class="card-icon icon-lab">⚗️</div>
+          <span class="card-badge badge-wip">Coming soon</span>
+        </div>
+        <div class="card-title">What's next</div>
+        <p class="card-desc">
+          Something new is always on the bench. The rule: it has to solve a real problem I've personally run into, and I have to be able to ship a working version before the idea gets boring. Check back, or reach out if you have a problem worth solving.
+        </p>
+        <div class="card-tags">
+          <span class="tag">TBD</span>
+          <span class="tag">Probably not another todo app</span>
+        </div>
+        <a href="mailto:morgan@morganlabs.org" class="card-link link-lab">
+          Pitch me a problem <span class="arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── About ─────────────────────────────────────── -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+
+      <div class="about-text">
+        <div class="section-label">About the lab</div>
+        <h2 class="section-title" style="margin-bottom: 20px;">One builder, real problems</h2>
+        <p>
+          I'm Morgan. I build software because I keep running into problems that don't have good solutions — or have solutions that are way more expensive and complicated than they need to be.
+        </p>
+        <p>
+          <strong>The method is simple:</strong> find a problem I understand well enough to solve, build the smallest thing that actually fixes it, and put it in front of real users as fast as possible. No pivots, no feature sprawl. If it's useful, it grows. If it's not, I learn fast and move on.
+        </p>
+        <p>
+          Morgan Labs is the umbrella. The projects are the point.
+        </p>
+        <div class="about-links">
+          <a href="https://github.com/morgan-coded" target="_blank" rel="noopener" class="about-link">
+            <span class="icon">⌥</span> GitHub — morgan-coded
+          </a>
+          <a href="mailto:morgan@morganlabs.org" class="about-link">
+            <span class="icon">✉</span> morgan@morganlabs.org
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label" style="margin-bottom: 20px;">How I build</div>
+        <div class="principles">
+          <div class="principle">
+            <div class="principle-num">01</div>
+            <div class="principle-title">Ship before it's perfect</div>
+            <p class="principle-desc">The fastest way to know if something is worth building is to put it in front of a real person. A working v0 beats a perfect wireframe every time.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">02</div>
+            <div class="principle-title">Solve one thing well</div>
+            <p class="principle-desc">Feature bloat is how good tools become bad ones. Every decision starts with: does this make the core use case better, or is it just interesting?</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">03</div>
+            <div class="principle-title">Build in public</div>
+            <p class="principle-desc">Accountability is a feature. If I'm building something, I talk about it. The process is as useful to share as the product.</p>
+          </div>
+          <div class="principle">
+            <div class="principle-num">04</div>
+            <div class="principle-title">No bloat, no middleman</div>
+            <p class="principle-desc">I write the code, make the decisions, and talk to the users. The overhead stays low because it has to — and because it should.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ─────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-left">
+        © 2026 Morgan Labs · <a href="mailto:morgan@morganlabs.org">morgan@morganlabs.org</a>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com/morgan-coded" target="_blank" rel="noopener">GitHub</a>
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
