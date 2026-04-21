@@ -508,6 +508,121 @@
       gap: 28px;
     }
 
+    .inventory-shell {
+      background: var(--panel);
+      border: 1px solid rgba(23, 19, 15, 0.12);
+      border-radius: 30px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .inventory-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(220px, 0.7fr);
+      gap: 24px;
+      padding: 28px 30px;
+      border-bottom: 1px solid rgba(23, 19, 15, 0.12);
+      background: linear-gradient(180deg, rgba(255, 251, 245, 0.82), rgba(255, 247, 238, 0.58));
+    }
+
+    .inventory-head p {
+      color: var(--ink-soft);
+    }
+
+    .inventory-meta {
+      display: grid;
+      gap: 10px;
+      align-content: start;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .inventory-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .inventory-meta span::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .inventory-list {
+      display: grid;
+    }
+
+    .inventory-row {
+      display: grid;
+      grid-template-columns: 92px minmax(0, 1.15fr) minmax(160px, 0.62fr) minmax(220px, 0.82fr);
+      gap: 18px;
+      align-items: start;
+      padding: 20px 30px;
+      border-top: 1px solid rgba(23, 19, 15, 0.1);
+    }
+
+    .inventory-row:first-child {
+      border-top: none;
+    }
+
+    .inventory-id {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      padding-top: 4px;
+    }
+
+    .inventory-main strong {
+      display: block;
+      font-size: 1.1rem;
+      letter-spacing: -0.03em;
+      margin-bottom: 5px;
+    }
+
+    .inventory-main span {
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-family: var(--font-mono);
+    }
+
+    .inventory-type {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      width: fit-content;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(255, 251, 245, 0.72);
+      border: 1px solid rgba(23, 19, 15, 0.12);
+      color: var(--ink-soft);
+      font-size: 0.76rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .inventory-copy p,
+    .inventory-linkblock p {
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+    }
+
+    .inventory-linkblock {
+      display: grid;
+      gap: 6px;
+      justify-items: start;
+    }
+
+    .inventory-linkblock a {
+      text-decoration: none;
+      font-weight: 600;
+      color: var(--accent-deep);
+    }
+
     .method-block {
       padding-top: 18px;
       border-top: 2px solid rgba(23, 19, 15, 0.18);
@@ -762,6 +877,15 @@
       .method-grid {
         grid-template-columns: 1fr;
       }
+
+      .inventory-head,
+      .inventory-row {
+        grid-template-columns: 1fr;
+      }
+
+      .inventory-row {
+        gap: 10px;
+      }
     }
 
     @media (max-width: 720px) {
@@ -810,6 +934,12 @@
       .footer-inner {
         align-items: flex-start;
       }
+
+      .inventory-head,
+      .inventory-row {
+        padding-left: 22px;
+        padding-right: 22px;
+      }
     }
   </style>
 </head>
@@ -825,6 +955,7 @@
       </a>
       <div class="nav-links">
         <a href="#work">Work</a>
+        <a href="#inventory">Projects</a>
         <a href="#method">Method</a>
         <a href="#notes">Notes</a>
         <a href="#contact">Contact</a>
@@ -932,6 +1063,133 @@
               <p>Computer vision, CLI tooling, merchant ops helpers, and whatever else proves useful before it becomes ceremonial.</p>
             </div>
           </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="inventory">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="section-kicker">Project inventory</p>
+            <h2>The fuller repo map, not just the poster version.</h2>
+          </div>
+          <p>
+            The public-facing products are only part of the picture. This section shows the current `morgan-coded` repo set, with public repos linked directly and private builds marked as private.
+          </p>
+        </div>
+
+        <div class="inventory-shell">
+          <div class="inventory-head">
+            <p>
+              This is the active project ledger behind Morgan Labs right now: public site work, public repos, private product builds, and supporting experiments that are still taking shape.
+            </p>
+            <div class="inventory-meta">
+              <span>8 current repos</span>
+              <span>2 public links</span>
+              <span>6 private builds</span>
+            </div>
+          </div>
+
+          <div class="inventory-list">
+            <div class="inventory-row">
+              <div class="inventory-id">01 / public</div>
+              <div class="inventory-main">
+                <strong>MorganLabs Site</strong>
+                <span>`morganlabs-site`</span>
+              </div>
+              <div class="inventory-type">Studio site</div>
+              <div class="inventory-linkblock">
+                <p>The public web surface for Morgan Labs, including project framing and legal pages.</p>
+                <a href="https://github.com/morgan-coded/morganlabs-site" target="_blank" rel="noopener">View public repo</a>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">02 / private</div>
+              <div class="inventory-main">
+                <strong>ReturnSense</strong>
+                <span>`returnsense-validation-starter`</span>
+              </div>
+              <div class="inventory-type">Shopify app</div>
+              <div class="inventory-copy">
+                <p>Return-signal analysis and merchant review workflows for Shopify stores, currently moving through app-review and compliance work.</p>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">03 / private</div>
+              <div class="inventory-main">
+                <strong>PackBridge</strong>
+                <span>`packbridge`</span>
+              </div>
+              <div class="inventory-type">Shopify app</div>
+              <div class="inventory-copy">
+                <p>Merchant-side Shopify app work around packing, workflow normalization, and store-operations handling.</p>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">04 / private</div>
+              <div class="inventory-main">
+                <strong>Chrome Review</strong>
+                <span>`Chrome-Review`</span>
+              </div>
+              <div class="inventory-type">Browser tooling</div>
+              <div class="inventory-copy">
+                <p>Private tooling and analysis work around Chrome review workflows and browser-surface inspection.</p>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">05 / private</div>
+              <div class="inventory-main">
+                <strong>Contact Guard</strong>
+                <span>`spamshield-contact-guard`</span>
+              </div>
+              <div class="inventory-type">Validation build</div>
+              <div class="inventory-copy">
+                <p>Private validation and anti-spam workflow work for guarded contact funnels and lightweight landing pages.</p>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">06 / private</div>
+              <div class="inventory-main">
+                <strong>StockLock</strong>
+                <span>`stocklock`</span>
+              </div>
+              <div class="inventory-type">Shopify app</div>
+              <div class="inventory-copy">
+                <p>Stock-aware merchant controls for catalogs and storefront behavior where inventory logic needs to stay truthful.</p>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">07 / public</div>
+              <div class="inventory-main">
+                <strong>LeadClaw</strong>
+                <span>`leadclaw`</span>
+              </div>
+              <div class="inventory-type">CLI + ops</div>
+              <div class="inventory-linkblock">
+                <p>Lightweight lead tracking for local service businesses that need follow-up visibility without CRM sprawl.</p>
+                <a href="https://github.com/morgan-coded/leadclaw" target="_blank" rel="noopener">View public repo</a>
+              </div>
+            </div>
+
+            <div class="inventory-row">
+              <div class="inventory-id">08 / private</div>
+              <div class="inventory-main">
+                <strong>VeloBar</strong>
+                <span>`vbt-app`</span>
+              </div>
+              <div class="inventory-type">Performance app</div>
+              <div class="inventory-copy">
+                <p>Velocity-based training software that uses phone video and computer vision to track bar path and rep speed.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
