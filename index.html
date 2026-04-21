@@ -3,536 +3,1052 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morgan Labs — Building tools that actually get used</title>
-  <meta name="description" content="Morgan Labs is an indie software studio. We build focused tools for real problems — no bloat, no VC, no roadmap theater.">
+  <title>Morgan Labs — Independent software, built close to the problem</title>
+  <meta name="description" content="Morgan Labs is an independent software studio building practical tools for Shopify merchants and small teams that need sharp, focused software.">
   <meta property="og:title" content="Morgan Labs">
-  <meta property="og:description" content="An indie studio building focused tools for real problems.">
+  <meta property="og:description" content="Independent software, built close to the problem.">
   <meta property="og:url" content="https://morganlabs.org">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧪</text></svg>">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23181310'/><text x='50' y='65' text-anchor='middle' font-size='58' fill='%23f8f1e6' font-family='Georgia,serif'>M</text></svg>">
   <style>
-    /* ── Reset ─────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
 
-    /* ── Tokens ─────────────────────────────────────── */
     :root {
-      --bg:        #09090b;
-      --surface:   #111113;
-      --surface2:  #18181b;
-      --border:    #27272a;
-      --border2:   #3f3f46;
-      --text:      #fafafa;
-      --muted:     #71717a;
-      --muted2:    #52525b;
-      --accent:    #6366f1;
-      --accent-dim:#312e81;
-      --green:     #22c55e;
-      --green-dim: #14532d;
-      --amber:     #f59e0b;
-      --amber-dim: #451a03;
-      --radius:    12px;
-      --radius-sm: 7px;
-      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      --mono: 'SF Mono', 'Fira Code', ui-monospace, monospace;
+      --paper: #f5ede1;
+      --paper-deep: #eadfcc;
+      --ink: #17130f;
+      --ink-soft: #564c43;
+      --line: rgba(23, 19, 15, 0.12);
+      --line-strong: rgba(23, 19, 15, 0.24);
+      --accent: #c05f37;
+      --accent-deep: #8c4121;
+      --green: #3b5a4b;
+      --gold: #b98e3d;
+      --panel: rgba(255, 250, 243, 0.72);
+      --shadow: 0 24px 60px rgba(38, 24, 13, 0.12);
+      --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+      --font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SF Mono", "IBM Plex Mono", "Courier New", monospace;
+      --radius: 24px;
+      --nav-height: 72px;
     }
 
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 15px;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(192, 95, 55, 0.12), transparent 30%),
+        radial-gradient(circle at 82% 18%, rgba(59, 90, 75, 0.12), transparent 28%),
+        linear-gradient(180deg, #f8f1e6 0%, var(--paper) 32%, #f2e7d8 100%);
+      color: var(--ink);
+      font-family: var(--font-sans);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      position: relative;
+      overflow-x: hidden;
     }
 
-    /* ── Layout ─────────────────────────────────────── */
-    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(rgba(23, 19, 15, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(23, 19, 15, 0.035) 1px, transparent 1px);
+      background-size: 32px 32px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.08));
+      pointer-events: none;
+      opacity: 0.35;
+    }
 
-    /* ── Nav ─────────────────────────────────────── */
+    a { color: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
     nav {
-      position: sticky; top: 0; z-index: 50;
-      border-bottom: 1px solid var(--border);
-      background: rgba(9,9,11,0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      height: var(--nav-height);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(248, 241, 230, 0.72);
+      border-bottom: 1px solid rgba(23, 19, 15, 0.08);
     }
+
     .nav-inner {
-      display: flex; align-items: center; gap: 24px;
-      height: 56px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
     }
-    .nav-logo {
-      display: flex; align-items: center; gap: 8px;
-      font-weight: 700; font-size: 15px; color: var(--text);
-      text-decoration: none; letter-spacing: -0.3px;
+
+    .brand-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: var(--ink);
     }
-    .nav-logo .dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
+
+    .brand-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #d98e47);
+      box-shadow: 0 0 0 6px rgba(192, 95, 55, 0.12);
       flex-shrink: 0;
     }
-    .nav-links { display: flex; gap: 20px; margin-left: auto; }
-    .nav-links a {
-      color: var(--muted); font-size: 14px; text-decoration: none;
-      transition: color 0.15s;
-    }
-    .nav-links a:hover { color: var(--text); }
 
-    /* ── Hero ─────────────────────────────────────── */
+    .brand-copy {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      gap: 5px;
+    }
+
+    .brand-copy strong {
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .brand-copy span {
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: 0.92rem;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--ink-soft);
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--ink);
+    }
+
     .hero {
-      padding: 96px 0 80px;
       position: relative;
-      overflow: hidden;
+      min-height: calc(100svh - var(--nav-height));
+      display: flex;
+      align-items: center;
+      padding: 52px 0 72px;
     }
-    .hero::before {
-      content: '';
-      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
-      pointer-events: none;
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: 48px;
+      align-items: center;
     }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 7px;
-      font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
-      text-transform: uppercase; color: var(--accent);
-      background: rgba(99,102,241,0.1);
-      border: 1px solid rgba(99,102,241,0.25);
-      padding: 4px 12px; border-radius: 100px;
-      margin-bottom: 28px;
-    }
-    .hero-eyebrow::before { content: '🧪'; font-size: 11px; }
-    .hero h1 {
-      font-size: clamp(36px, 5vw, 58px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.08;
-      max-width: 800px;
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
       margin-bottom: 24px;
     }
-    .hero h1 em {
-      font-style: normal;
-      background: linear-gradient(135deg, #818cf8 0%, #6366f1 50%, #4f46e5 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-sub {
-      font-size: 18px;
-      color: var(--muted);
-      max-width: 540px;
-      line-height: 1.65;
-      margin-bottom: 36px;
-    }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
-    .btn {
-      display: inline-flex; align-items: center; gap: 7px;
-      padding: 10px 20px; border-radius: var(--radius-sm);
-      font-size: 14px; font-weight: 600; text-decoration: none;
-      transition: all 0.15s; cursor: pointer; border: none;
-    }
-    .btn-primary {
-      background: var(--accent); color: #fff;
-    }
-    .btn-primary:hover { background: #4f46e5; transform: translateY(-1px); }
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover { border-color: var(--border2); color: var(--text); }
 
-    /* ── Stats bar ─────────────────────────────────────── */
-    .stats-bar {
-      display: flex; gap: 0;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      margin: 64px 0 80px;
-    }
-    .stat {
-      flex: 1; padding: 20px 24px;
-      border-right: 1px solid var(--border);
-    }
-    .stat:last-child { border-right: none; }
-    .stat-value {
-      font-size: 26px; font-weight: 800;
-      letter-spacing: -0.5px; color: var(--text);
-    }
-    .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-    /* ── Section headings ─────────────────────────────────────── */
-    .section-label {
-      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--muted2);
-      margin-bottom: 12px;
-    }
-    .section-title {
-      font-size: clamp(24px, 3vw, 32px);
-      font-weight: 700; letter-spacing: -0.5px;
-      margin-bottom: 8px;
-    }
-    .section-sub { color: var(--muted); max-width: 480px; line-height: 1.6; margin-bottom: 48px; }
-
-    /* ── Project cards ─────────────────────────────────────── */
-    #projects { padding: 0 0 96px; }
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 1px;
+      background: currentColor;
     }
 
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 32px;
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.2s, transform 0.2s;
-      display: flex; flex-direction: column;
+    .hero-copy h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.4rem, 8vw, 7.2rem);
+      line-height: 0.93;
+      letter-spacing: -0.06em;
+      max-width: 8ch;
+      margin-bottom: 24px;
     }
-    .project-card:hover {
-      border-color: var(--border2);
+
+    .hero-copy h1 span {
+      color: var(--accent-deep);
+      display: inline-block;
+    }
+
+    .hero-copy p {
+      max-width: 34rem;
+      font-size: clamp(1.04rem, 1.6vw, 1.22rem);
+      color: var(--ink-soft);
+      margin-bottom: 30px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 20px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
       transform: translateY(-2px);
     }
-    .project-card::before {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-    }
-    .card-leadclaw::before { background: linear-gradient(90deg, transparent, var(--accent), transparent); }
-    .card-vbt::before     { background: linear-gradient(90deg, transparent, var(--green), transparent); }
-    .card-lab::before     { background: linear-gradient(90deg, transparent, var(--amber), transparent); }
 
-    .card-header {
-      display: flex; align-items: flex-start;
-      justify-content: space-between; gap: 12px;
-      margin-bottom: 20px;
-    }
-    .card-icon {
-      width: 44px; height: 44px; border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; flex-shrink: 0;
-    }
-    .icon-leadclaw { background: rgba(99,102,241,0.12); }
-    .icon-vbt      { background: rgba(34,197,94,0.12); }
-    .icon-lab      { background: rgba(245,158,11,0.12); }
-
-    .card-badge {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
-      text-transform: uppercase; padding: 3px 9px;
-      border-radius: 100px; white-space: nowrap;
-    }
-    .badge-live    { background: rgba(34,197,94,0.12);  color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
-    .badge-beta    { background: rgba(99,102,241,0.12); color: #818cf8;      border: 1px solid rgba(99,102,241,0.2); }
-    .badge-wip     { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.2); }
-
-    .card-title {
-      font-size: 20px; font-weight: 700; letter-spacing: -0.3px;
-      margin-bottom: 10px;
-    }
-    .card-desc { color: var(--muted); font-size: 14px; line-height: 1.65; flex: 1; }
-    .card-tags {
-      display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0 24px;
-    }
-    .tag {
-      font-size: 11px; padding: 3px 9px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 100px; color: var(--muted); font-family: var(--mono);
-    }
-    .card-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 13px; font-weight: 600; text-decoration: none;
-      transition: gap 0.15s;
-    }
-    .link-leadclaw { color: #818cf8; }
-    .link-vbt      { color: var(--green); }
-    .link-lab      { color: var(--amber); }
-    .card-link:hover { gap: 10px; }
-    .card-link .arrow { font-size: 16px; }
-
-    /* Coming Soon card */
-    .card-lab {
-      background: repeating-linear-gradient(
-        -45deg,
-        var(--surface),
-        var(--surface) 8px,
-        rgba(245,158,11,0.025) 8px,
-        rgba(245,158,11,0.025) 16px
-      );
+    .button-primary {
+      background: var(--ink);
+      color: #fff7ef;
+      box-shadow: 0 16px 32px rgba(23, 19, 15, 0.14);
     }
 
-    /* ── About ─────────────────────────────────────── */
-    #about {
-      padding: 80px 0;
-      border-top: 1px solid var(--border);
+    .button-primary:hover,
+    .button-primary:focus-visible {
+      background: #241d17;
     }
-    .about-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+
+    .button-secondary {
+      border: 1px solid var(--line-strong);
+      color: var(--ink);
+      background: rgba(255, 250, 243, 0.58);
+    }
+
+    .hero-note {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+
+    .hero-note span {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-note span::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .hero-poster {
+      position: relative;
+      min-height: 640px;
+      display: grid;
+      place-items: center;
+    }
+
+    .poster-sheet {
+      position: relative;
+      width: min(100%, 510px);
+      min-height: 620px;
+      padding: 34px;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255, 252, 247, 0.92), rgba(238, 226, 209, 0.88)),
+        var(--paper-deep);
+      border: 1px solid rgba(23, 19, 15, 0.12);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .poster-sheet::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 24%, rgba(192, 95, 55, 0.18), transparent 24%),
+        radial-gradient(circle at 78% 12%, rgba(59, 90, 75, 0.16), transparent 22%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.54), transparent 55%);
+      z-index: -2;
+    }
+
+    .poster-sheet::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(23, 19, 15, 0.08);
+      border-radius: 20px;
+      z-index: -1;
+    }
+
+    .poster-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.74rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      margin-bottom: 44px;
+    }
+
+    .poster-code {
+      font-family: var(--font-mono);
+      color: var(--accent-deep);
+    }
+
+    .poster-sheet h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.9rem, 5vw, 4.8rem);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      max-width: 7ch;
+      margin-bottom: 24px;
+    }
+
+    .poster-sheet p {
+      max-width: 24rem;
+      color: var(--ink-soft);
+      font-size: 1rem;
+    }
+
+    .poster-list {
+      list-style: none;
+      margin-top: 34px;
+      border-top: 1px solid rgba(23, 19, 15, 0.12);
+    }
+
+    .poster-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 18px 0;
+      border-bottom: 1px solid rgba(23, 19, 15, 0.12);
+      font-size: 0.95rem;
+    }
+
+    .poster-list strong {
+      font-weight: 700;
+      font-size: 0.98rem;
+    }
+
+    .poster-list span {
+      color: var(--ink-soft);
+      max-width: 12rem;
+      text-align: right;
+    }
+
+    .tape {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 14px;
+      background: rgba(250, 240, 224, 0.82);
+      border: 1px solid rgba(23, 19, 15, 0.12);
+      box-shadow: 0 12px 24px rgba(44, 31, 21, 0.08);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+      backdrop-filter: blur(8px);
+    }
+
+    .tape-one {
+      top: 22px;
+      right: 32px;
+      transform: rotate(5deg);
+    }
+
+    .tape-two {
+      left: 26px;
+      bottom: 30px;
+      transform: rotate(-7deg);
+    }
+
+    .floating-ring {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 1px solid rgba(23, 19, 15, 0.1);
+      top: 70px;
+      right: -24px;
+      animation: drift 12s ease-in-out infinite;
+    }
+
+    .floating-ring::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      border: 1px dashed rgba(23, 19, 15, 0.12);
+    }
+
+    .section {
+      padding: 92px 0;
+      border-top: 1px solid rgba(23, 19, 15, 0.12);
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(280px, 0.9fr);
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 40px;
+    }
+
+    .section-header p {
+      color: var(--ink-soft);
+      max-width: 32rem;
+    }
+
+    .section-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin-bottom: 12px;
+    }
+
+    .section-header h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.3rem, 4vw, 4rem);
+      line-height: 0.96;
+      letter-spacing: -0.05em;
+    }
+
+    .work-list {
+      border-top: 1px solid rgba(23, 19, 15, 0.14);
+    }
+
+    .work-item {
+      display: grid;
+      grid-template-columns: 110px minmax(0, 1.1fr) minmax(220px, 0.8fr);
+      gap: 24px;
+      align-items: start;
+      padding: 26px 0;
+      border-bottom: 1px solid rgba(23, 19, 15, 0.14);
+      text-decoration: none;
+    }
+
+    .work-index {
+      font-family: var(--font-mono);
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding-top: 2px;
+    }
+
+    .work-main h3 {
+      font-size: clamp(1.55rem, 2.4vw, 2.15rem);
+      letter-spacing: -0.04em;
+      margin-bottom: 8px;
+    }
+
+    .work-main p,
+    .work-side p {
+      color: var(--ink-soft);
+    }
+
+    .work-side {
+      display: grid;
+      gap: 10px;
+    }
+
+    .status-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(192, 95, 55, 0.1);
+    }
+
+    .work-item:hover .work-main h3,
+    .work-item:hover .status-row {
+      color: var(--accent-deep);
+    }
+
+    .method-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    .method-block {
+      padding-top: 18px;
+      border-top: 2px solid rgba(23, 19, 15, 0.18);
+    }
+
+    .method-block strong {
+      display: block;
+      font-family: var(--font-display);
+      font-size: 1.7rem;
+      line-height: 1;
+      letter-spacing: -0.05em;
+      margin-bottom: 14px;
+    }
+
+    .method-block p {
+      color: var(--ink-soft);
+    }
+
+    .notes-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(280px, 0.88fr);
+      gap: 34px;
       align-items: start;
     }
-    .about-text p {
-      color: var(--muted); line-height: 1.75; margin-bottom: 16px;
-    }
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-text strong { color: var(--text); font-weight: 600; }
-    .about-links { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
-    .about-link {
-      display: flex; align-items: center; gap: 10px;
-      color: var(--muted); font-size: 14px; text-decoration: none;
-      padding: 10px 14px;
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-sm); transition: all 0.15s;
-    }
-    .about-link:hover { border-color: var(--border2); color: var(--text); }
-    .about-link .icon { font-size: 16px; }
 
-    .principles { display: flex; flex-direction: column; gap: 0; }
-    .principle {
-      padding: 20px 0;
-      border-bottom: 1px solid var(--border);
+    .notes-copy p {
+      color: var(--ink-soft);
+      max-width: 34rem;
+      margin-bottom: 18px;
     }
-    .principle:first-child { padding-top: 0; }
-    .principle:last-child { border-bottom: none; }
-    .principle-num {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
-    }
-    .principle-title {
-      font-size: 15px; font-weight: 600; margin-bottom: 4px;
-    }
-    .principle-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-    /* ── Footer ─────────────────────────────────────── */
+    .notes-board {
+      background: var(--panel);
+      border: 1px solid rgba(23, 19, 15, 0.12);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .notes-board header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(23, 19, 15, 0.12);
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .note-row {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 18px;
+      padding: 20px 22px;
+      border-top: 1px solid rgba(23, 19, 15, 0.08);
+    }
+
+    .note-row:first-of-type {
+      border-top: none;
+    }
+
+    .note-label {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding-top: 4px;
+    }
+
+    .note-row p {
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+
+    .note-row strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 6px;
+      color: var(--ink);
+    }
+
+    .cta {
+      padding: 102px 0 110px;
+    }
+
+    .cta-panel {
+      position: relative;
+      overflow: hidden;
+      padding: 42px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at top right, rgba(192, 95, 55, 0.16), transparent 30%),
+        linear-gradient(135deg, rgba(30, 24, 19, 0.98), rgba(53, 43, 34, 0.96));
+      color: #f8f1e6;
+      box-shadow: 0 24px 70px rgba(35, 21, 10, 0.2);
+    }
+
+    .cta-panel::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(248, 241, 230, 0.12);
+      pointer-events: none;
+    }
+
+    .cta-panel h2 {
+      position: relative;
+      z-index: 1;
+      font-family: var(--font-display);
+      font-size: clamp(2.6rem, 5vw, 4.5rem);
+      line-height: 0.94;
+      letter-spacing: -0.06em;
+      max-width: 10ch;
+      margin-bottom: 18px;
+    }
+
+    .cta-panel p {
+      position: relative;
+      z-index: 1;
+      max-width: 36rem;
+      color: rgba(248, 241, 230, 0.76);
+      margin-bottom: 26px;
+      font-size: 1.02rem;
+    }
+
+    .cta-links {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 22px;
+      align-items: center;
+    }
+
+    .cta-links a {
+      color: #f8f1e6;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cta-links a.subtle {
+      color: rgba(248, 241, 230, 0.72);
+      font-weight: 500;
+    }
+
     footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 0;
+      padding: 0 0 28px;
     }
-    .footer-inner {
-      display: flex; align-items: center;
-      justify-content: space-between; flex-wrap: wrap; gap: 12px;
-    }
-    .footer-left { font-size: 13px; color: var(--muted2); }
-    .footer-left a { color: var(--muted); text-decoration: none; }
-    .footer-left a:hover { color: var(--text); }
-    .footer-right { display: flex; gap: 20px; }
-    .footer-right a { font-size: 13px; color: var(--muted2); text-decoration: none; }
-    .footer-right a:hover { color: var(--muted); }
 
-    /* ── Responsive ─────────────────────────────────────── */
-    @media (max-width: 768px) {
-      .hero { padding: 64px 0 56px; }
-      .stats-bar { flex-direction: column; }
-      .stat { border-right: none; border-bottom: 1px solid var(--border); }
-      .stat:last-child { border-bottom: none; }
-      .about-grid { grid-template-columns: 1fr; gap: 40px; }
-      .nav-links { display: none; }
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: center;
+      flex-wrap: wrap;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+
+    .footer-inner a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-copy > * {
+      opacity: 0;
+      transform: translateY(24px);
+      animation: enter-up 0.8s ease forwards;
+    }
+
+    .hero-copy > *:nth-child(1) { animation-delay: 0.05s; }
+    .hero-copy > *:nth-child(2) { animation-delay: 0.12s; }
+    .hero-copy > *:nth-child(3) { animation-delay: 0.19s; }
+    .hero-copy > *:nth-child(4) { animation-delay: 0.26s; }
+    .hero-copy > *:nth-child(5) { animation-delay: 0.33s; }
+
+    .poster-sheet {
+      animation: poster-in 0.9s ease 0.2s both;
+    }
+
+    @keyframes enter-up {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes poster-in {
+      from {
+        opacity: 0;
+        transform: translateY(28px) rotate(-1.2deg) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
+      }
+    }
+
+    @keyframes drift {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(16px); }
+    }
+
+    @media (max-width: 980px) {
+      .hero-layout,
+      .section-header,
+      .notes-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-poster {
+        min-height: auto;
+      }
+
+      .poster-sheet {
+        min-height: auto;
+      }
+
+      .work-item {
+        grid-template-columns: 92px minmax(0, 1fr);
+      }
+
+      .work-side {
+        grid-column: 2;
+      }
+
+      .method-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --nav-height: 66px;
+      }
+
+      .container {
+        width: min(100% - 28px, 1180px);
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 32px 0 56px;
+      }
+
+      .hero-copy h1 {
+        max-width: 9ch;
+      }
+
+      .poster-sheet,
+      .cta-panel {
+        padding: 28px 22px;
+      }
+
+      .poster-list li,
+      .note-row {
+        grid-template-columns: 1fr;
+      }
+
+      .poster-list li {
+        display: grid;
+      }
+
+      .poster-list span {
+        text-align: left;
+      }
+
+      .note-label {
+        padding-top: 0;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-
-<!-- ── Nav ─────────────────────────────────────── -->
-<nav>
-  <div class="container">
-    <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <div class="dot"></div>
-        Morgan Labs
+  <nav>
+    <div class="container nav-inner">
+      <a class="brand-mark" href="#top">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span class="brand-copy">
+          <strong>Morgan Labs</strong>
+          <span>Independent software studio</span>
+        </span>
       </a>
       <div class="nav-links">
-        <a href="#projects">Projects</a>
-        <a href="#about">About</a>
-        <a href="mailto:morgan@morganlabs.org">Contact</a>
+        <a href="#work">Work</a>
+        <a href="#method">Method</a>
+        <a href="#notes">Notes</a>
+        <a href="#contact">Contact</a>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-<!-- ── Hero ─────────────────────────────────────── -->
-<section class="hero">
-  <div class="container">
-    <div class="hero-eyebrow">Indie Software Studio</div>
-    <h1>Building tools that<br><em>actually get used</em></h1>
-    <p class="hero-sub">
-      Morgan Labs is a one-person shop. I pick real problems, build focused software to solve them, and ship fast. No bloat, no committee, no roadmap theater.
-    </p>
-    <div class="hero-actions">
-      <a href="#projects" class="btn btn-primary">See the projects →</a>
-      <a href="mailto:morgan@morganlabs.org" class="btn btn-ghost">Get in touch</a>
-    </div>
-  </div>
-</section>
-
-<!-- ── Stats ─────────────────────────────────────── -->
-<div class="container">
-  <div class="stats-bar">
-    <div class="stat">
-      <div class="stat-value">2</div>
-      <div class="stat-label">Active projects</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">Austin, TX</div>
-      <div class="stat-label">Home base</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">0</div>
-      <div class="stat-label">VC dollars raised</div>
-    </div>
-    <div class="stat">
-      <div class="stat-value">100%</div>
-      <div class="stat-label">Shipped by one person</div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Projects ─────────────────────────────────────── -->
-<section id="projects">
-  <div class="container">
-    <div class="section-label">Featured experiments</div>
-    <h2 class="section-title">What's in the lab</h2>
-    <p class="section-sub">Two focused tools, two completely different problems. That's the point.</p>
-
-    <div class="projects-grid">
-
-      <!-- LeadClaw -->
-      <div class="project-card card-leadclaw">
-        <div class="card-header">
-          <div class="card-icon icon-leadclaw">🦞</div>
-          <span class="card-badge badge-beta">Beta</span>
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <p class="eyebrow">Built by one person, close to the actual work</p>
+          <h1>Software with a <span>point of view.</span></h1>
+          <p>
+            Morgan Labs builds focused tools for merchants, operators, and small teams who need software that solves the real bottleneck instead of performing startup theater around it.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">See current work</a>
+            <a class="button button-secondary" href="mailto:morgan@morganlabs.org">Start a conversation</a>
+          </div>
+          <div class="hero-note">
+            <span>Shopify apps in active review</span>
+            <span>Small surfaces, fast feedback</span>
+            <span>No VC choreography</span>
+          </div>
         </div>
-        <div class="card-title">LeadClaw</div>
-        <p class="card-desc">
-          Local service businesses lose jobs to missed follow-ups — not because they don't care, but because they're busy doing the actual work. LeadClaw is a lightweight CLI that shows you who to call today, drafts the follow-up text, and keeps your pipeline visible. No CRM subscription. No sales team required.
-        </p>
-        <div class="card-tags">
-          <span class="tag">Python</span>
-          <span class="tag">SQLite</span>
-          <span class="tag">Claude AI</span>
-          <span class="tag">CLI</span>
-          <span class="tag">Web dashboard</span>
+
+        <div class="hero-poster" aria-hidden="true">
+          <div class="poster-sheet">
+            <div class="poster-topline">
+              <span>Studio bulletin</span>
+              <span class="poster-code">Austin, TX / Shipping now</span>
+            </div>
+            <h2>Independent software, built close to the problem.</h2>
+            <p>
+              The studio stays intentionally small so the work can stay sharp: less dashboard wallpaper, more useful tools that earn their keep.
+            </p>
+            <ul class="poster-list">
+              <li>
+                <strong>ReturnSense</strong>
+                <span>Return-pattern intelligence for Shopify merchants.</span>
+              </li>
+              <li>
+                <strong>StockLock</strong>
+                <span>Stock-aware controls for catalogs that should behave like real inventory.</span>
+              </li>
+              <li>
+                <strong>Lab builds</strong>
+                <span>Proof-of-need experiments that stay small until they deserve to grow.</span>
+              </li>
+            </ul>
+            <span class="tape tape-one">No bloat</span>
+            <span class="tape tape-two">Ship the useful part</span>
+            <span class="floating-ring"></span>
+          </div>
         </div>
-        <a href="https://github.com/morgan-coded/leadclaw" target="_blank" rel="noopener" class="card-link link-leadclaw">
-          View on GitHub <span class="arrow">→</span>
-        </a>
       </div>
+    </section>
 
-      <!-- VeloBar -->
-      <div class="project-card card-vbt">
-        <div class="card-header">
-          <div class="card-icon icon-vbt">📹</div>
-          <span class="card-badge badge-wip">Early access</span>
+    <section class="section reveal" id="work">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="section-kicker">Current work</p>
+            <h2>Products with a tight brief and a real operator on the other side.</h2>
+          </div>
+          <p>
+            Morgan Labs is not trying to be a software mall. Each product exists because a workflow kept breaking in the same place and the available tools felt too heavy, too vague, or too expensive.
+          </p>
         </div>
-        <div class="card-title">VeloBar</div>
-        <p class="card-desc">
-          Velocity-Based Training tells you how hard you're actually working — not by reps or weight on the bar, but by how fast it moves. The problem: the hardware that does this costs $2,000+. VeloBar does it with your phone camera. Point it at the bar, hit record. YOLOv8 tracks the bar path, segments every rep, and reports concentric velocity in real time. Built for home gym athletes who train seriously but don't have a sports science budget.
-        </p>
-        <div class="card-tags">
-          <span class="tag">YOLOv8</span>
-          <span class="tag">MediaPipe</span>
-          <span class="tag">Bar path tracking</span>
-          <span class="tag">Flutter</span>
-          <span class="tag">Tauri</span>
-        </div>
-        <a href="https://github.com/morgan-coded/vbt-app" target="_blank" rel="noopener" class="card-link link-vbt">
-          Follow the build <span class="arrow">→</span>
-        </a>
-      </div>
 
-      <!-- Lab Notes / Coming Soon -->
-      <div class="project-card card-lab">
-        <div class="card-header">
-          <div class="card-icon icon-lab">⚗️</div>
-          <span class="card-badge badge-wip">Coming soon</span>
-        </div>
-        <div class="card-title">What's next</div>
-        <p class="card-desc">
-          Something new is always on the bench. The rule: it has to solve a real problem I've personally run into, and I have to be able to ship a working version before the idea gets boring. Check back, or reach out if you have a problem worth solving.
-        </p>
-        <div class="card-tags">
-          <span class="tag">TBD</span>
-          <span class="tag">Probably not another todo app</span>
-        </div>
-        <a href="mailto:morgan@morganlabs.org" class="card-link link-lab">
-          Pitch me a problem <span class="arrow">→</span>
-        </a>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ── About ─────────────────────────────────────── -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-
-      <div class="about-text">
-        <div class="section-label">About the lab</div>
-        <h2 class="section-title" style="margin-bottom: 20px;">One builder, real problems</h2>
-        <p>
-          I'm Morgan. I build software because I keep running into problems that don't have good solutions — or have solutions that are way more expensive and complicated than they need to be.
-        </p>
-        <p>
-          <strong>The method is simple:</strong> find a problem I understand well enough to solve, build the smallest thing that actually fixes it, and put it in front of real users as fast as possible. No pivots, no feature sprawl. If it's useful, it grows. If it's not, I learn fast and move on.
-        </p>
-        <p>
-          Morgan Labs is the umbrella. The projects are the point.
-        </p>
-        <div class="about-links">
-          <a href="https://github.com/morgan-coded" target="_blank" rel="noopener" class="about-link">
-            <span class="icon">⌥</span> GitHub — morgan-coded
+        <div class="work-list">
+          <a class="work-item" href="https://returnsense.morganlabs.org" target="_blank" rel="noopener">
+            <div class="work-index">01 / Shopify</div>
+            <div class="work-main">
+              <h3>ReturnSense</h3>
+              <p>Turns return records into merchant-facing clarity: where return patterns cluster, what products keep showing up, and what actions deserve review next.</p>
+            </div>
+            <div class="work-side">
+              <div class="status-row"><span class="status-dot"></span>Active app review</div>
+              <p>Built for merchants who need return intelligence without turning their workflow into another bloated operations tool.</p>
+            </div>
           </a>
-          <a href="mailto:morgan@morganlabs.org" class="about-link">
-            <span class="icon">✉</span> morgan@morganlabs.org
+
+          <div class="work-item">
+            <div class="work-index">02 / Shopify</div>
+            <div class="work-main">
+              <h3>StockLock</h3>
+              <p>Helps merchants keep product and stock behavior honest by adding tighter control around inventory-aware storefront decisions and related app workflows.</p>
+            </div>
+            <div class="work-side">
+              <div class="status-row"><span class="status-dot"></span>In review now</div>
+              <p>Designed for stores where inventory rules are operational, not cosmetic, and mistakes have real downstream cost.</p>
+            </div>
+          </div>
+
+          <a class="work-item" href="https://github.com/morgan-coded" target="_blank" rel="noopener">
+            <div class="work-index">03 / Lab</div>
+            <div class="work-main">
+              <h3>Studio experiments</h3>
+              <p>Smaller builds, prototypes, and test rigs that stay public enough to show the process and small enough to remain honest.</p>
+            </div>
+            <div class="work-side">
+              <div class="status-row"><span class="status-dot"></span>Ongoing</div>
+              <p>Computer vision, CLI tooling, merchant ops helpers, and whatever else proves useful before it becomes ceremonial.</p>
+            </div>
           </a>
         </div>
       </div>
+    </section>
 
-      <div>
-        <div class="section-label" style="margin-bottom: 20px;">How I build</div>
-        <div class="principles">
-          <div class="principle">
-            <div class="principle-num">01</div>
-            <div class="principle-title">Ship before it's perfect</div>
-            <p class="principle-desc">The fastest way to know if something is worth building is to put it in front of a real person. A working v0 beats a perfect wireframe every time.</p>
+    <section class="section reveal" id="method">
+      <div class="container">
+        <div class="section-header">
+          <div>
+            <p class="section-kicker">Method</p>
+            <h2>Small studio rules, on purpose.</h2>
           </div>
-          <div class="principle">
-            <div class="principle-num">02</div>
-            <div class="principle-title">Solve one thing well</div>
-            <p class="principle-desc">Feature bloat is how good tools become bad ones. Every decision starts with: does this make the core use case better, or is it just interesting?</p>
+          <p>
+            The studio stays lean so product decisions can stay close to the problem. Fewer layers means faster truth: what helps, what confuses, and what needs to be removed.
+          </p>
+        </div>
+
+        <div class="method-grid">
+          <div class="method-block">
+            <strong>Start with the bottleneck.</strong>
+            <p>Every build begins where real work gets stuck, not where a pitch deck wants a feature to exist.</p>
           </div>
-          <div class="principle">
-            <div class="principle-num">03</div>
-            <div class="principle-title">Build in public</div>
-            <p class="principle-desc">Accountability is a feature. If I'm building something, I talk about it. The process is as useful to share as the product.</p>
+          <div class="method-block">
+            <strong>Keep the surface area tight.</strong>
+            <p>If a tool needs a tour before it can help, it is probably carrying too much weight already.</p>
           </div>
-          <div class="principle">
-            <div class="principle-num">04</div>
-            <div class="principle-title">No bloat, no middleman</div>
-            <p class="principle-desc">I write the code, make the decisions, and talk to the users. The overhead stays low because it has to — and because it should.</p>
+          <div class="method-block">
+            <strong>Ship early enough to learn.</strong>
+            <p>Useful v1s beat polished abstractions. Feedback is better when the thing can actually be used.</p>
           </div>
         </div>
       </div>
+    </section>
 
-    </div>
-  </div>
-</section>
+    <section class="section reveal" id="notes">
+      <div class="container notes-layout">
+        <div class="notes-copy">
+          <p class="section-kicker">Studio notes</p>
+          <h2 style="font-family: var(--font-display); font-size: clamp(2.3rem, 4vw, 4rem); line-height: 0.97; letter-spacing: -0.05em; margin-bottom: 18px;">Indie developer energy, minus the cosplay.</h2>
+          <p>
+            Morgan Labs is intentionally independent, but not precious about it. The goal is not to look underground. The goal is to build software that feels thoughtful, clear, and surprisingly useful the first time someone touches it.
+          </p>
+          <p>
+            That means practical support pages, truthful copy, release notes that match reality, and products that stay readable even when the problem underneath them is messy.
+          </p>
+        </div>
 
-<!-- ── Footer ─────────────────────────────────────── -->
-<footer>
-  <div class="container">
-    <div class="footer-inner">
-      <div class="footer-left">
-        © 2026 Morgan Labs · <a href="mailto:morgan@morganlabs.org">morgan@morganlabs.org</a>
+        <div class="notes-board">
+          <header>
+            <span>What matters here</span>
+            <span>Updated April 2026</span>
+          </header>
+          <div class="note-row">
+            <div class="note-label">Support</div>
+            <div>
+              <strong>Direct contact beats support theater.</strong>
+              <p>Questions, reviews, and merchant issues route straight to a real builder, not a fake enterprise shell.</p>
+            </div>
+          </div>
+          <div class="note-row">
+            <div class="note-label">Privacy</div>
+            <div>
+              <strong>Policy pages should match the actual apps.</strong>
+              <p>The privacy policy for MorganLabs now explicitly covers both ReturnSense and StockLock, not just whichever app is most recent.</p>
+            </div>
+          </div>
+          <div class="note-row">
+            <div class="note-label">Build</div>
+            <div>
+              <strong>The product is the portfolio.</strong>
+              <p>No generic agency case studies here. The best proof is the software itself, the constraints it respects, and the workflows it improves.</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="footer-right">
-        <a href="https://github.com/morgan-coded" target="_blank" rel="noopener">GitHub</a>
-        <a href="#projects">Projects</a>
-        <a href="#about">About</a>
+    </section>
+
+    <section class="cta reveal" id="contact">
+      <div class="container">
+        <div class="cta-panel">
+          <h2>If you have a sharp problem, that is the right way to start.</h2>
+          <p>
+            Morgan Labs works best on workflows that matter and still feel underserved: merchant ops, catalog control, review-heavy tooling, and weird edge cases that larger software keeps flattening into generic templates.
+          </p>
+          <div class="cta-links">
+            <a href="mailto:morgan@morganlabs.org">morgan@morganlabs.org</a>
+            <a class="subtle" href="https://github.com/morgan-coded" target="_blank" rel="noopener">GitHub</a>
+            <a class="subtle" href="/privacy">Privacy policy</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+      <p>© 2026 Morgan Labs. Built independently in Austin, Texas.</p>
+      <div class="footer-links">
+        <a href="#work">Work</a>
+        <a href="#method">Method</a>
+        <a href="#contact">Contact</a>
+        <a href="/privacy">Privacy</a>
       </div>
     </div>
-  </div>
-</footer>
+  </footer>
 
+  <script>
+    const revealItems = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16 });
+
+    revealItems.forEach((item) => observer.observe(item));
+  </script>
 </body>
 </html>
